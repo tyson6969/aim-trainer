@@ -15,6 +15,9 @@ target_event = pygame.USEREVENT
 target_padding = 30
 
 bg_color = (0, 25, 40)
+lives = 3
+
+label_font = pygame.font.SysFont("serif" ,24)
 
 class Target:
     MAX_SIZE = 30
@@ -57,7 +60,34 @@ def draw(win, targets):
         target.draw(win)
 
 
-    pygame.display.update()
+
+def format_time(Secs):
+    milli = math.floor(int(Secs*100 % 100) / 1000)
+    seconds = int(round(Secs % 60, 1))
+    minutes = int(Secs // 60)
+
+
+    return f"{minutes:02d}: {seconds:02d}.{milli}"
+
+def draw_top_bar(win,elapsed_time, target_pressed, clicks, misses):
+    pygame.draw.rect(win, "grey", (0,0, WIDTH, 50))
+    time_label = label_font.render(f"Time: {format_time(elapsed_time)}", 1 , "black")
+    
+
+    speed = round(target_pressed / elapsed_time, 1)
+    speed_label = label_font.render(f"speed: {speed} t/s", 1,"black")
+
+    hits_label = label_font.render(f"Hits: {target_pressed} ", 1,"black")
+    lives_label = label_font.render(f"lives: {lives - misses} ", 1,"black")
+    
+
+
+
+    win.blit(time_label, (5, 5))
+    win.blit(speed_label, (200, 5))
+    win.blit(hits_label, (450, 5))
+    win.blit(lives_label, (650, 5))
+
 
 
 
@@ -78,6 +108,7 @@ def main():
         clock.tick(60)
         click = False
         mouse_pos = pygame.mouse.get_pos()
+        elapsed_time = time.time() - start_time
 
 
 
@@ -88,7 +119,7 @@ def main():
 
             if event.type == target_event:
                 x = random.randint(target_padding, WIDTH - target_padding)
-                y = random.randint(target_padding, HEIGHT - target_padding)
+                y = random.randint(target_padding + 50, HEIGHT - target_padding)
                 target = Target(x , y)
                 targets.append(target)
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -106,10 +137,14 @@ def main():
             if click and target.collide(*mouse_pos):
                 targets.remove(target)
                 target_pressed += 1
+        if misses >= lives:
+            pass
 
 
 
         draw(win, targets)
+        draw_top_bar(win,elapsed_time, target_pressed, clicks, misses )
+        pygame.display.update()
             
 
 

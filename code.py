@@ -5,12 +5,18 @@ import random
 import time
 
 WIDTH, HEIGHT = 800, 600
+
 win = pygame.display.set_mode((WIDTH, HEIGHT ))
 pygame.display.set_caption("aim trainer")
 
+target_increment = 400 
+target_event = pygame.USEREVENT
 
+target_padding = 30
 
-class target:
+bg_color = (0, 25, 40)
+
+class Target:
     MAX_SIZE = 30
     GROWTH_RATE = 0.2
     COLOR = "red"
@@ -40,17 +46,46 @@ class target:
 
 
 
+def draw(win, targets):
+    win.fill(bg_color)
+
+    for target in targets:
+        target.draw(win)
+
+
+    pygame.display.update()
+
 
 
 def main():
     run = True
     targets = []
+    clock = pygame.time.Clock()
+
+
+    pygame.time.set_timer(target_event, target_increment)
 
     while run:
+        clock.tick(60)
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 break
+
+            if event.type == target_event:
+                x = random.randint(target_padding, WIDTH - target_padding)
+                y = random.randint(target_padding, HEIGHT - target_padding)
+                target = Target(x , y)
+                targets.append(target)
+
+
+        for target in targets:
+            target.update()
+
+        draw(win, targets)
+            
 
 
     pygame.quit()

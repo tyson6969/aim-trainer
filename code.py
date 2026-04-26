@@ -13,9 +13,9 @@ WIDTH, HEIGHT = 800, 600
 win = pygame.display.set_mode((WIDTH, HEIGHT ))
 pygame.display.set_caption("aim trainer")
 
-slider = Slider(win,100 , 100, 200, 20, min= 100, max=800, step= 50 , initial=400)
+slider = Slider(win,770 , 100, 20, 200, min= 100, max=800, step= 50 , initial=400, vertical=True, flipped=True)
 
-target_increment = slider.getValue()   
+# target_increment = slider.getValue()   
 target_event = pygame.USEREVENT
 
 target_padding = 30
@@ -85,14 +85,16 @@ def draw_top_bar(win,elapsed_time, target_pressed, clicks, misses):
 
     hits_label = label_font.render(f"Hits: {target_pressed} ", 1,"black")
     lives_label = label_font.render(f"lives: {lives - misses} ", 1,"black")
+    fast_label = label_font.render(f"target speed: {slider.getValue()} ms", 1,"black")
     
 
 
 
     win.blit(time_label, (5, 5))
     win.blit(speed_label, (200, 5))
-    win.blit(hits_label, (450, 5))
-    win.blit(lives_label, (650, 5))
+    win.blit(hits_label, (350, 5))
+    win.blit(lives_label, (450, 5))
+    win.blit(fast_label, (550, 5))
 
 def end_screen(win, elapsed_time, target_pressed, clicks, misses):
     win.fill(bg_color)
@@ -144,25 +146,30 @@ def main():
     clicks = 0
     misses = 0
     start_time = time.time()
+    
+
+    current_increment = slider.getValue()
         
 
 
 
 
-    pygame.time.set_timer(target_event, target_increment)
+    pygame.time.set_timer(target_event, current_increment)
 
     while run:
         clock.tick(60)
         click = False
         mouse_pos = pygame.mouse.get_pos()
         elapsed_time = time.time() - start_time
+
+        new_increment = slider.getValue()
+
+        if new_increment != current_increment:
+            current_increment = new_increment
+            pygame.time.set_timer(target_event, current_increment)
+
         
         
-        
-       
-
-
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False

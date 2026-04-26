@@ -1,15 +1,21 @@
 import pygame
-pygame.init()
+import pygame_widgets
 import math
 import random
 import time
+from pygame_widgets.slider import Slider
+from pygame_widgets.textbox import TextBox
 
+
+pygame.init()
 WIDTH, HEIGHT = 800, 600
 
 win = pygame.display.set_mode((WIDTH, HEIGHT ))
 pygame.display.set_caption("aim trainer")
 
-target_increment = 400 
+slider = Slider(win,100 , 100, 200, 20, min= 100, max=800, step= 50 , initial=400)
+
+target_increment = slider.getValue()   
 target_event = pygame.USEREVENT
 
 target_padding = 30
@@ -126,6 +132,9 @@ def get_middle(surface):
 
 
 
+
+
+
 def main():
     run = True
     targets = []
@@ -135,6 +144,9 @@ def main():
     clicks = 0
     misses = 0
     start_time = time.time()
+        
+
+
 
 
     pygame.time.set_timer(target_event, target_increment)
@@ -144,6 +156,10 @@ def main():
         click = False
         mouse_pos = pygame.mouse.get_pos()
         elapsed_time = time.time() - start_time
+        
+        
+        
+       
 
 
 
@@ -179,6 +195,8 @@ def main():
 
         draw(win, targets)
         draw_top_bar(win,elapsed_time, target_pressed, clicks, misses )
+        pygame_widgets.update(event)
+        
         pygame.display.update()
             
 

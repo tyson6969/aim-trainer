@@ -137,6 +137,8 @@ def get_middle(surface):
 
 
 
+
+
 def main():
     run = True
     targets = []
